@@ -22,10 +22,6 @@ function MainContainer() {
     }
   };
 
-  //   fetch('http://localhost:3000/api/matchDetails?matchId=4446289', {})
-  //     .then((response) => response.json())
-  //     .then((data) => console.log(data.content.shotmap.shots));
-
   return (
     <div>
       <MatchSearch onSearch={fetchMatchDetails} />
