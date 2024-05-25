@@ -1,4 +1,5 @@
 import League from '../models/leagueModel.js';
+import Match from '../models/matchModel.js';
 import { fetchMatchesByLeague } from '../utils/api.js';
 
 export const getMatchesByLeagueId = async (req, res) => {
@@ -8,14 +9,19 @@ export const getMatchesByLeagueId = async (req, res) => {
     if (!league) {
       return res.status(404).json({ error: 'League not found' });
     }
-    let matches = league.matches;
+    console.log(league);
+    let matches = await Match.find({ leagueId: league._id });
     if (matches.length === 0) {
-      matches = await fetchMatchesByLeague(leagueId);
-      league.matches = matches;
-      await league.save();
+      const fetchedMatches = await fetchMatchesByLeague(leagueId);
+      matches = await Match.insertMany(
+        fetchedMatches.map((match) => ({
+          ...match,
+          leagueId: league._id,
+        }))
+      );
       console.log('Matches fetched from API and stored in DB.');
     }
-    res.json(league.matches);
+    res.json(matches);
   } catch (error) {
     console.error('Error fetching matches:', error);
     res.status(500).json({ error: 'Error fetching matches' });

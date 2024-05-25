@@ -1,5 +1,10 @@
 import fetch from 'node-fetch';
 
+export const allowedLeagueIds = [
+  38, 40, 46, 47, 48, 53, 54, 55, 57, 59, 61, 64, 67, 69, 71, 87, 108, 110, 111,
+  113, 126, 130, 140, 146, 196, 223, 268, 9080,
+];
+
 export const fetchMatchDetails = async (matchId) => {
   try {
     const response = await fetch(
@@ -25,7 +30,7 @@ export const fetchLeagues = async () => {
       throw new Error('Failed to fetch leagues data from Fotmob API.');
     }
     const data = await response.json();
-    return data.countries;
+    return data;
   } catch (error) {
     console.error('Error fetching leagues: ', error);
     throw error;
@@ -42,7 +47,7 @@ export const fetchMatchesByLeague = async (leagueId) => {
       throw new Error('Failed to fetch match data from Fotmob API.');
     }
     const data = await response.json();
-    return data.matches;
+    return data.overview.leagueOverviewMatches;
   } catch (error) {
     console.error('Error fetching matches: ', error);
     throw error;

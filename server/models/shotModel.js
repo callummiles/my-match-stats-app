@@ -11,6 +11,9 @@ const ShotSchema = new mongoose.Schema({
   xCoord: Number,
   yCoord: Number,
   result: String,
+  match: { type: mongoose.Schema.Types.ObjectId, ref: 'Match' },
 });
 
-export default ShotSchema;
+const Shot = mongoose.model('Shot', ShotSchema);
+
+export default Shot;

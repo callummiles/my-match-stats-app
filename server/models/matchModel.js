@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import ShotSchema from './shotModel.js';
 
 const MatchSchema = new mongoose.Schema({
   id: Number,
@@ -7,7 +6,9 @@ const MatchSchema = new mongoose.Schema({
   awayTeam: String,
   pageUrl: String,
   date: Date,
-  shots: [ShotSchema],
+  league: { type: mongoose.Schema.Types.ObjectId, ref: 'League' },
 });
 
-export default MatchSchema;
+const Match = mongoose.model('Match', MatchSchema);
+
+export default Match;

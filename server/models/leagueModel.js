@@ -1,13 +1,11 @@
 import mongoose from 'mongoose';
-import MatchSchema from './matchModel.js';
 
 const LeagueSchema = new mongoose.Schema({
   id: Number,
   name: String,
   localizedName: String,
-  country: String,
-  code: String,
-  matches: [MatchSchema],
+  country: { type: String, required: true },
+  code: { type: String, required: true },
 });
 
 const League = mongoose.model('League', LeagueSchema);
