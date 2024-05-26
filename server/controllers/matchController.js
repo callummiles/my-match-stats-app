@@ -1,22 +1,33 @@
 import League from '../models/leagueModel.js';
 import Match from '../models/matchModel.js';
-import { fetchMatchesByLeague } from '../utils/api.js';
+import { fetchMatchDataByLeagueAndSeason } from '../utils/api.js';
 
-export const getMatchesByLeagueId = async (req, res) => {
-  const leagueId = req.params.leagueId;
+export const getMatchesByLeagueIdAndSeason = async (req, res) => {
+  const { leagueId, season } = req.params;
+  const decodedSeason = season.replace('-', '%2F');
   try {
-    const league = await League.findOne({ id: leagueId });
-    if (!league) {
-      return res.status(404).json({ error: 'League not found' });
-    }
-    console.log(league);
-    let matches = await Match.find({ leagueId: league._id });
+    let matches = await Match.find({
+      'league.id': leagueId,
+      'league.selectedSeason': decodedSeason,
+    });
     if (matches.length === 0) {
-      const fetchedMatches = await fetchMatchesByLeague(leagueId);
+      const fetchedMatchData = await fetchMatchDataByLeagueAndSeason(
+        leagueId,
+        decodedSeason
+      );
+      const leagueDetails = fetchedMatchData.details;
+      const allMatches = fetchedMatchData.matches.allMatches;
       matches = await Match.insertMany(
-        fetchedMatches.map((match) => ({
-          ...match,
-          leagueId: league._id,
+        allMatches.map((match) => ({
+          id: match.id,
+          date: match.status.utcTime,
+          round: match.round,
+          homeTeam: match.home.name,
+          awayTeam: match.away.name,
+          score: match.status.scoreStr,
+          league: leagueDetails,
+          shots: [],
+          url: match.pageUrl,
         }))
       );
       console.log('Matches fetched from API and stored in DB.');

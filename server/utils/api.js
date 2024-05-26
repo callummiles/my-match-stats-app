@@ -7,10 +7,9 @@ export const allowedLeagueIds = [
 
 export const fetchMatchDetails = async (matchId) => {
   try {
-    const response = await fetch(
-      // eslint-disable-next-line no-undef
-      `${process.env.FOTMOB_MATCH_DETAILS_URL}${matchId}`
-    );
+    // eslint-disable-next-line no-undef
+    const URL = `${process.env.FOTMOB_MATCH_DETAILS_URL}${matchId}`;
+    const response = await fetch(URL);
     if (!response.ok) {
       throw new Error('Failed to fetch match stats data from Fotmob API.');
     }
@@ -22,32 +21,17 @@ export const fetchMatchDetails = async (matchId) => {
   }
 };
 
-export const fetchLeagues = async () => {
+export const fetchMatchDataByLeagueAndSeason = async (leagueId, season) => {
   try {
     // eslint-disable-next-line no-undef
-    const response = await fetch(process.env.FOTMOB_LEAGUES_URL);
-    if (!response.ok) {
-      throw new Error('Failed to fetch leagues data from Fotmob API.');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching leagues: ', error);
-    throw error;
-  }
-};
-
-export const fetchMatchesByLeague = async (leagueId) => {
-  try {
-    const response = await fetch(
-      // eslint-disable-next-line no-undef
-      `${process.env.FOTMOB_MATCHES_BY_LEAGUE_URL}${leagueId}`
-    );
+    const URL = `${process.env.FOTMOB_MATCHES_BY_LEAGUE_URL}${leagueId}&season=${season}`;
+    const response = await fetch(URL);
     if (!response.ok) {
       throw new Error('Failed to fetch match data from Fotmob API.');
     }
     const data = await response.json();
-    return data.overview.leagueOverviewMatches;
+    console.log(data);
+    return data;
   } catch (error) {
     console.error('Error fetching matches: ', error);
     throw error;

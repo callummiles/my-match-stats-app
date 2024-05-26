@@ -2,18 +2,21 @@ import mongoose from 'mongoose';
 
 const ShotSchema = new mongoose.Schema({
   id: Number,
-  minute: Number,
-  player: String,
-  type: String,
+  eventType: String,
+  teamId: Number,
+  playerName: String,
+  x: Number,
+  y: Number,
+  min: Number,
+  minAdded: Number,
+  isBlocked: Boolean,
+  isOnTarget: Boolean,
+  expectedGoals: Number,
+  expectedGoalsOnTarget: Number,
+  shotType: String,
   situation: String,
-  xG: Number,
-  xGOT: Number,
-  xCoord: Number,
-  yCoord: Number,
-  result: String,
-  match: { type: mongoose.Schema.Types.ObjectId, ref: 'Match' },
+  period: String,
+  isOwnGoal: Boolean,
 });
 
-const Shot = mongoose.model('Shot', ShotSchema);
-
-export default Shot;
+export default ShotSchema;

@@ -1,12 +1,12 @@
 import express from 'express';
 import {
-  getMatchesByLeagueId,
+  getMatchesByLeagueIdAndSeason,
   addMatch,
 } from '../controllers/matchController.js';
 
 const router = express.Router();
 
-router.get('/:leagueId', getMatchesByLeagueId);
+router.get('/:leagueId/:season', getMatchesByLeagueIdAndSeason);
 router.post('/', addMatch);
 
 export default router;

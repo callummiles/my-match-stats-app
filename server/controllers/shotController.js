@@ -1,17 +1,27 @@
-import League from '../models/leagueModel.js';
+import Match from '../models/matchModel.js';
+import { fetchMatchDetails } from '../utils/api.js';
 
 export const getShotsByMatchId = async (req, res) => {
   const { matchId } = req.params;
   try {
-    const league = await League.findOne(
-      { 'matches.id': matchId },
-      { 'matches.$': 1 }
-    );
-    if (!league) {
+    const matchData = await fetchMatchDetails(matchId);
+
+    if (!matchData) {
       return res.status(404).json({ error: 'Match not found.' });
     }
-    const match = league.matches[0];
-    res.json(match.shots);
+
+    const shots = matchData.content.shotmap.shots;
+
+    const result = await Match.findOneAndUpdate(
+      { id: matchId },
+      { $set: { shots: shots } }
+    );
+
+    if (!result) {
+      return res.status(404).json({ error: 'Match not found.' });
+    }
+
+    res.json({ message: `Shots updated for match ${matchId}:`, shots });
   } catch (error) {
     console.error('Error fetching shots:', error);
     res.status(500).json({ error: 'Error fetching shots.' });
@@ -21,7 +31,7 @@ export const getShotsByMatchId = async (req, res) => {
 export const addShots = async (req, res) => {
   const { matchId, shot } = req.body;
   try {
-    const league = await League.findOneAndUpdate(
+    const league = await Match.findOneAndUpdate(
       { 'matches.id': matchId },
       { $push: { 'matches:$:shots': shot } },
       { new: true }

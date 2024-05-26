@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import leagueRoutes from './routes/leagueRoutes.js';
+//import leagueRoutes from './routes/leagueRoutes.js';
 import matchRoutes from './routes/matchRoutes.js';
 import shotRoutes from './routes/shotRoutes.js';
 
@@ -25,7 +25,7 @@ mongoose
   .then(() => console.log('Connected successfully to MongoDB.'))
   .catch((err) => console.error('Failed to connect to MongoDB: ', err));
 
-app.use('/leagues', leagueRoutes);
+//app.use('/leagues', leagueRoutes);
 app.use('/matches', matchRoutes);
 app.use('/shots', shotRoutes);
 
