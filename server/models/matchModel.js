@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import LeagueSchema from './leagueModel.js';
 import ShotSchema from './shotModel.js';
 import HalfsSchema from './halfsModel.js';
-import EventSchema from './eventSchema.js';
 
 const MatchSchema = new mongoose.Schema({
   id: { type: Number, unique: true },
@@ -16,7 +15,6 @@ const MatchSchema = new mongoose.Schema({
   league: LeagueSchema,
   shots: [ShotSchema],
   halfs: HalfsSchema,
-  events: [EventSchema],
   url: String,
 });
 
