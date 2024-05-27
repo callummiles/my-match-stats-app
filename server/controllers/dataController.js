@@ -1,7 +1,7 @@
 import Match from '../models/matchModel.js';
 import { fetchMatchDetails } from '../utils/api.js';
 
-export const getShotsByMatchId = async (req, res) => {
+export const getDataByMatchId = async (req, res) => {
   const { matchId } = req.params;
   try {
     const matchData = await fetchMatchDetails(matchId);
@@ -11,17 +11,39 @@ export const getShotsByMatchId = async (req, res) => {
     }
 
     const shots = matchData.content.shotmap.shots;
+    const events = matchData.content.matchFacts.events.events;
+    const halfs = matchData.header.status.halfs;
 
-    const result = await Match.findOneAndUpdate(
+    console.log(events);
+
+    const shotsResult = await Match.findOneAndUpdate(
       { id: matchId },
       { $set: { shots: shots } }
     );
 
-    if (!result) {
+    const halfsResult = await Match.findOneAndUpdate(
+      { id: matchId },
+      { $set: { halfs: halfs } }
+    );
+
+    const eventsResult = await Match.findOneAndUpdate(
+      { id: matchId },
+      { $set: { events: events } }
+    );
+
+    if (!shotsResult) {
       return res.status(404).json({ error: 'Match not found.' });
     }
 
-    res.json({ message: `Shots updated for match ${matchId}:`, shots });
+    if (!halfsResult) {
+      return res.status(404).json({ error: 'Match not found.' });
+    }
+
+    if (!eventsResult) {
+      return res.status(404).json({ error: 'Match not found.' });
+    }
+
+    res.json({ message: `Data updated for match ${matchId}.` });
   } catch (error) {
     console.error('Error fetching shots:', error);
     res.status(500).json({ error: 'Error fetching shots.' });

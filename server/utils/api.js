@@ -30,7 +30,7 @@ export const fetchMatchDataByLeagueAndSeason = async (leagueId, season) => {
       throw new Error('Failed to fetch match data from Fotmob API.');
     }
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
     return data;
   } catch (error) {
     console.error('Error fetching matches: ', error);

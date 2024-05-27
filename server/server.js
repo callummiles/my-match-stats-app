@@ -5,9 +5,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-//import leagueRoutes from './routes/leagueRoutes.js';
 import matchRoutes from './routes/matchRoutes.js';
-import shotRoutes from './routes/shotRoutes.js';
+import dataRoutes from './routes/dataRoutes.js';
 
 dotenv.config();
 
@@ -25,8 +24,7 @@ mongoose
   .then(() => console.log('Connected successfully to MongoDB.'))
   .catch((err) => console.error('Failed to connect to MongoDB: ', err));
 
-//app.use('/leagues', leagueRoutes);
 app.use('/matches', matchRoutes);
-app.use('/shots', shotRoutes);
+app.use('/data', dataRoutes);
 
 ViteExpress.listen(app, 3000, () => console.log('Server is listening...'));
