@@ -13,25 +13,18 @@ export const getDataByMatchId = async (req, res) => {
     const shots = matchData.content.shotmap.shots;
     const halfs = matchData.header.status.halfs;
 
-    const shotsResult = await Match.findOneAndUpdate(
+    await Match.findOneAndUpdate(
       { id: matchId },
-      { $set: { shots: shots } }
+      { $set: { shots: shots, halfs: halfs } }
     );
 
-    const halfsResult = await Match.findOneAndUpdate(
-      { id: matchId },
-      { $set: { halfs: halfs } }
-    );
+    const updatedMatch = await Match.findOne({ id: matchId });
 
-    if (!shotsResult) {
+    if (!updatedMatch) {
       return res.status(404).json({ error: 'Match not found.' });
     }
 
-    if (!halfsResult) {
-      return res.status(404).json({ error: 'Match not found.' });
-    }
-
-    res.json({ message: `Data updated for match ${matchId}.` });
+    res.json(updatedMatch);
   } catch (error) {
     console.error('Error fetching shots:', error);
     res.status(500).json({ error: 'Error fetching shots.' });

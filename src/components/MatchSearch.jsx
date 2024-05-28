@@ -3,9 +3,11 @@ import { useState } from 'react';
 function MatchSearch({ onSearch }) {
   const [matchId, setMatchId] = useState('');
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (matchId.trim()) {
-      onSearch(matchId.trim());
+      const response = await fetch(`http://localhost:3000/data/${matchId}`);
+      const data = await response.json();
+      onSearch(data);
     }
   };
 
@@ -18,7 +20,7 @@ function MatchSearch({ onSearch }) {
           onChange={(e) => setMatchId(e.target.value)}
           placeholder="Enter Match ID"
         />
-        <button onClick={handleSearch}></button>
+        <button onClick={handleSearch}>Search</button>
       </div>
     </div>
   );
