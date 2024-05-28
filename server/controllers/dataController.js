@@ -26,12 +26,15 @@ export const getDataByMatchId = async (req, res) => {
         { new: true }
       );
 
-      if (!match) {
-        return res.status(404).json({ error: 'Match not found.' });
-      }
       console.log(
         `Fetched and updated match details from API for match ID ${matchId}.`
       );
+
+      match = await Match.findOne({ id: matchId });
+
+      if (!match) {
+        return res.status(404).json({ error: 'Match not found.' });
+      }
     } else {
       console.log(`Detailed match data found in DB for match ID ${matchId}.`);
     }
