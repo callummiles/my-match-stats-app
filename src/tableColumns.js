@@ -24,11 +24,11 @@ export const COLUMNS = [
     accessor: 'expectedGoalsOnTarget',
   },
   {
-    Header: 'x Co-ordinate',
+    Header: 'x',
     accessor: 'x',
   },
   {
-    Header: 'y Co-ordinate',
+    Header: 'y',
     accessor: 'y',
   },
   {

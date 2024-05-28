@@ -16,33 +16,36 @@ function ShotTable({ shots }) {
     tableInstance;
 
   return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          // eslint-disable-next-line react/jsx-key
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              // eslint-disable-next-line react/jsx-key
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
+    <div>
+      <h3>Shotmap:</h3>
+      <table {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup) => (
             // eslint-disable-next-line react/jsx-key
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
                 // eslint-disable-next-line react/jsx-key
-                <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
               ))}
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row) => {
+            prepareRow(row);
+            return (
+              // eslint-disable-next-line react/jsx-key
+              <tr {...row.getRowProps()}>
+                {row.cells.map((cell) => (
+                  // eslint-disable-next-line react/jsx-key
+                  <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

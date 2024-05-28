@@ -3,8 +3,6 @@ function MatchDetails({ match }) {
     return <div>No match data available.</div>;
   }
 
-  console.log(match);
-
   const goals = match.shots.filter((shot) => shot.eventType === 'Goal');
 
   return (
@@ -19,7 +17,9 @@ function MatchDetails({ match }) {
         <ul>
           {goals.map((goal) => (
             <li key={goal.id}>
-              {goal.playerName} {goal.min}&#39; (
+              {goal.playerName} {goal.min}
+              {goal.minAdded ? `+${goal.minAdded}` : ''}&#39;
+              {goal.isOwnGoal ? '(OG) ' : ' '}(
               {goal.teamId === match.homeId ? match.homeTeam : match.awayTeam})
             </li>
           ))}

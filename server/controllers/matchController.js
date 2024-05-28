@@ -4,7 +4,8 @@ import { fetchMatchDataByLeagueAndSeason } from '../utils/api.js';
 
 export const getMatchesByLeagueIdAndSeason = async (req, res) => {
   const { leagueId, season } = req.params;
-  const decodedSeason = season.replace('-', '%2F');
+  const endpointSeason = season.replace('-', '%2F');
+  const databaseSeason = season.replace('-', '/');
 
   try {
     console.log(
@@ -12,8 +13,12 @@ export const getMatchesByLeagueIdAndSeason = async (req, res) => {
     );
     let matches = await Match.find({
       'league.id': leagueId,
-      'league.selectedSeason': decodedSeason,
+      'league.selectedSeason': databaseSeason,
     });
+
+    console.log(
+      `Found ${matches.length} matches in DB for league ${leagueId} and ${season}.`
+    );
 
     if (matches.length === 0) {
       console.log(
@@ -21,7 +26,7 @@ export const getMatchesByLeagueIdAndSeason = async (req, res) => {
       );
       const fetchedMatchData = await fetchMatchDataByLeagueAndSeason(
         leagueId,
-        decodedSeason
+        endpointSeason
       );
       const leagueDetails = fetchedMatchData.details;
       const allMatches = fetchedMatchData.matches.allMatches;
@@ -39,7 +44,7 @@ export const getMatchesByLeagueIdAndSeason = async (req, res) => {
               awayTeam: match.away.name,
               awayId: match.away.id,
               score: match.status.scoreStr,
-              league: leagueDetails,
+              league: { ...leagueDetails, selectedSeason: databaseSeason },
               shots: [],
               halfs: {},
               url: match.pageUrl,
@@ -56,29 +61,16 @@ export const getMatchesByLeagueIdAndSeason = async (req, res) => {
         );
         console.log('Upsert count: ', bulkWriteResult.upsertedCount);
         console.log('Matched count: ', bulkWriteResult.matchedCount);
+
         matches = await Match.find({
           'league.id': leagueId,
-          'league.selectedSeason': decodedSeason,
+          'league.selectedSeason': databaseSeason,
         });
       }
 
-      // matches = await Match.insertMany(
-      //   allMatches.map((match) => ({
-      //     id: match.id,
-      //     date: match.status.utcTime,
-      //     round: match.roundName,
-      //     homeTeam: match.home.name,
-      //     homeId: match.home.id,
-      //     awayTeam: match.away.name,
-      //     awayId: match.away.id,
-      //     score: match.status.scoreStr,
-      //     league: leagueDetails,
-      //     shots: [],
-      //     halfs: {},
-      //     url: match.pageUrl,
-      //   }))
-      // );
-      // console.log('Matches fetched from API and stored in DB.');
+      console.log(
+        `Re-queried DB and found ${matches.length} matches after upsert for league ${leagueId} and season ${season}.`
+      );
     } else {
       console.log(
         `Matches found in database for league ${leagueId} and season ${season}.`
