@@ -4,27 +4,39 @@ import { fetchMatchDetails } from '../utils/api.js';
 export const getDataByMatchId = async (req, res) => {
   const { matchId } = req.params;
   try {
-    const matchData = await fetchMatchDetails(matchId);
+    console.log(`Checking DB for match ID ${matchId}.`);
+    let match = await Match.findOne({ id: matchId });
 
-    if (!matchData) {
-      return res.status(404).json({ error: 'Match not found.' });
+    if (!match || !match.shots.length || !Object.keys(match.halfs).length) {
+      console.log(
+        `No detailed match data found in DB for match ID ${matchId}.`
+      );
+      const matchData = await fetchMatchDetails(matchId);
+
+      if (!matchData) {
+        return res.status(404).json({ error: 'Match not found.' });
+      }
+
+      const shots = matchData.content.shotmap.shots;
+      const halfs = matchData.header.status.halfs;
+
+      await Match.findOneAndUpdate(
+        { id: matchId },
+        { $set: { shots: shots, halfs: halfs } },
+        { new: true }
+      );
+
+      if (!match) {
+        return res.status(404).json({ error: 'Match not found.' });
+      }
+      console.log(
+        `Fetched and updated match details from API for match ID ${matchId}.`
+      );
+    } else {
+      console.log(`Detailed match data found in DB for match ID ${matchId}.`);
     }
 
-    const shots = matchData.content.shotmap.shots;
-    const halfs = matchData.header.status.halfs;
-
-    await Match.findOneAndUpdate(
-      { id: matchId },
-      { $set: { shots: shots, halfs: halfs } }
-    );
-
-    const updatedMatch = await Match.findOne({ id: matchId });
-
-    if (!updatedMatch) {
-      return res.status(404).json({ error: 'Match not found.' });
-    }
-
-    res.json(updatedMatch);
+    res.json(match);
   } catch (error) {
     console.error('Error fetching shots:', error);
     res.status(500).json({ error: 'Error fetching shots.' });

@@ -5,9 +5,15 @@ function MatchSearch({ onSearch }) {
 
   const handleSearch = async () => {
     if (matchId.trim()) {
-      const response = await fetch(`http://localhost:3000/data/${matchId}`);
-      const data = await response.json();
-      onSearch(data);
+      try {
+        console.log(`Searching for match ID ${matchId}...`);
+        const response = await fetch(`http://localhost:3000/data/${matchId}`);
+        const data = await response.json();
+        console.log(`Received data for match ID ${matchId}:`, data);
+        onSearch(data);
+      } catch (error) {
+        console.error('Error fetching match details: ', error);
+      }
     }
   };
 
