@@ -3,6 +3,7 @@ import Match from '../models/matchModel.js';
 import { fetchMatchDataByLeagueAndSeason } from '../utils/api.js';
 
 export const getMatchesByLeagueIdAndSeason = async (req, res) => {
+  console.log(req.params);
   const { leagueId, season } = req.params;
   const endpointSeason = season.replace('-', '%2F');
   const databaseSeason = season.replace('-', '/');

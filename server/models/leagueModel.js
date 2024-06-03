@@ -5,7 +5,6 @@ const LeagueSchema = new mongoose.Schema({
   name: String,
   selectedSeason: String,
   country: String,
-  //code: { type: String, required: true },
 });
 
 export default LeagueSchema;

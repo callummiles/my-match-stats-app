@@ -29,8 +29,6 @@ function MainContainer() {
     setShots(formattedShots);
   };
 
-  console.log(shots);
-
   return (
     <div>
       <div>
